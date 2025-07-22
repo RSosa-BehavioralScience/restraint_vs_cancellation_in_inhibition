@@ -4,9 +4,13 @@ Contains R code and data for testing dissociations between response restraint an
 Instructions for Data Processing and Analysis Pipeline:
 
 Load required packages
+
 Import the dataset using load
+
 Run analysis scripts in the specified sequence 
+
 Save your workspace periodically to preserve progress
+
 If interrupted, reload your saved environment
 
 Note: If you encounter issues or have questions about the methodology, please contact the corresponding author.
