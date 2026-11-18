@@ -127,4 +127,29 @@ lat <- ggplot(pred_plot, aes(x = trial_type, y = Predicted, color = trial_type))
 print(lat)
 #Recomended dimensions 272 x 400
 
+######Manually calculating r squared of the model
+
+m <- model
+
+#Extract the estimated variance components (rat, session, residual) as a data frame
+vc <- as.data.frame(lme4::VarCorr(m))
+
+#Sum the variances of the random effects (rat and session; session is estimated at 0)
+var_random <- sum(vc$vcov[vc$grp != "Residual"])
+
+#Take the residual variance
+var_resid <- vc$vcov[vc$grp == "Residual"]
+
+#Variance of the predictions from the fixed part only (trial type), ignoring random effects
+var_fixed <- var(predict(m, re.form = NA))
+
+#Marginal R2: share of total variance explained by trial type alone
+r2_marginal <- var_fixed / (var_fixed + var_random + var_resid)
+
+#Conditional R2: share explained by trial type plus between-rat differences
+r2_conditional <- (var_fixed + var_random) / (var_fixed + var_random + var_resid)
+
+#Print both, rounded to three decimals
+round(c(marginal = r2_marginal, conditional = r2_conditional), 3)
+
 #Now, you may proceed with script 1.2
