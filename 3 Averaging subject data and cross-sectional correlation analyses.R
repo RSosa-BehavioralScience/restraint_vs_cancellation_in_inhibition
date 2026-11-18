@@ -299,18 +299,52 @@ for(angle in angles) {
   ellipse_points <- rbind(ellipse_points, data.frame(x = rotated_point[1], y = rotated_point[2]))
 }
 
-csc_rri_85 <- ggplot(data = xbar_85, aes(x=z_RRI, y=z_RCI))+
-  geom_point(color="red", size=6)+
-  geom_path(data = ellipse_points, aes(x = x, y = y), color = "red") +
-   geom_vline(aes(xintercept=mean(z_RRI)), color="black", linetype="dashed", linewidth=1.5) +
-  geom_vline(aes(xintercept=mean(z_RRI)-sd(z_RRI)), color="black", linetype="dashed", linewidth=0.5) +
-  geom_vline(aes(xintercept=mean(z_RRI)+sd(z_RRI)), color="black", linetype="dashed", linewidth=0.5) +
-   geom_hline(aes(yintercept=mean(z_RCI)), color="black", linetype="dashed", linewidth=1.5) +
-  geom_hline(aes(yintercept=mean(z_RCI)-sd(z_RRI)), color="black", linetype="dashed", linewidth=0.5) +
-  geom_hline(aes(yintercept=mean(z_RCI)+sd(z_RRI)), color="black", linetype="dashed", linewidth=0.5) +
-  scale_x_continuous(name = "Z-Score RRI", limits = c(-2.5, 2.5), breaks = c(seq(-2,2,1))) +
-  scale_y_continuous(name = "Z-Score RCI", limits = c(-2.5, 2.5), breaks = c(seq(-2,2,1))) +
-  #geom_smooth(method="lm", color="antiquewhite4", fill="white", se=T) +
+# csc_rri_85 <- ggplot(data = xbar_85, aes(x=z_RRI, y=z_RCI))+
+#   geom_point(color="red", size=6)+
+#   geom_path(data = ellipse_points, aes(x = x, y = y), color = "red") +
+#    geom_vline(aes(xintercept=mean(z_RRI)), color="black", linetype="dashed", linewidth=1.5) +
+#   geom_vline(aes(xintercept=mean(z_RRI)-sd(z_RRI)), color="black", linetype="dashed", linewidth=0.5) +
+#   geom_vline(aes(xintercept=mean(z_RRI)+sd(z_RRI)), color="black", linetype="dashed", linewidth=0.5) +
+#    geom_hline(aes(yintercept=mean(z_RCI)), color="black", linetype="dashed", linewidth=1.5) +
+#   geom_hline(aes(yintercept=mean(z_RCI)-sd(z_RRI)), color="black", linetype="dashed", linewidth=0.5) +
+#   geom_hline(aes(yintercept=mean(z_RCI)+sd(z_RRI)), color="black", linetype="dashed", linewidth=0.5) +
+#   scale_x_continuous(name = "Z-Score RRI", limits = c(-2.5, 2.5), breaks = c(seq(-2,2,1))) +
+#   scale_y_continuous(name = "Z-Score RCI", limits = c(-2.5, 2.5), breaks = c(seq(-2,2,1))) +
+#   #geom_smooth(method="lm", color="antiquewhite4", fill="white", se=T) +
+#   theme_classic()
+
+#Figure 5 with an exploratory, continuous measure of dissociation shown as point color.
+
+#Absolute discrepancy between each subject's two z-scores; 0 places the subject on the identity line
+xbar_85$d <- abs(xbar_85$z_RRI - xbar_85$z_RCI)
+
+csc_rri_85 <- ggplot(data = xbar_85, aes(x = z_RRI, y = z_RCI)) +
+  #Identity line (z_RRI = z_RCI): where subjects would fall if the indices were perfectly correlated
+  geom_abline(intercept = 0, slope = 1, color = "grey60", linetype = "dotted", linewidth = 0.7) +
+  #90% density ellipse
+  geom_path(data = ellipse_points, aes(x = x, y = y), color = "grey30") +
+  #Mean of RRI 
+  geom_vline(aes(xintercept = mean(z_RRI)), color = "black", linetype = "dashed", linewidth = 1.5) +
+  #Mean of RRI minus 1 SD 
+  geom_vline(aes(xintercept = mean(z_RRI) - sd(z_RRI)), color = "black", linetype = "dashed", linewidth = 0.5) +
+  #Mean of RRI plus 1 SD 
+  geom_vline(aes(xintercept = mean(z_RRI) + sd(z_RRI)), color = "black", linetype = "dashed", linewidth = 0.5) +
+  #Mean of RCI 
+  geom_hline(aes(yintercept = mean(z_RCI)), color = "black", linetype = "dashed", linewidth = 1.5) +
+  #Mean of RCI minus 1 SD 
+  geom_hline(aes(yintercept = mean(z_RCI) - sd(z_RCI)), color = "black", linetype = "dashed", linewidth = 0.5) +
+  #Mean of RCI plus 1 SD 
+  geom_hline(aes(yintercept = mean(z_RCI) + sd(z_RCI)), color = "black", linetype = "dashed", linewidth = 0.5) +
+  geom_point(aes(fill = d), shape = 21, color = "black", size = 6) +
+  #Sequential color palette (pale to dark red); direction = 1 shows larger discrepancies darker
+  scale_fill_distiller(name = expression(abs(italic(z)[RRI] - italic(z)[RCI])),
+                       palette = "OrRd", direction = 1, limits = c(0, max(xbar_85$d))) +
+  #x axis: z-scores of the response restraint index
+  scale_x_continuous(name = "Z-Score RRI", limits = c(-2.5, 2.5), breaks = seq(-2, 2, 1)) +
+  #y axis: z-scores of the response cancellation index
+  scale_y_continuous(name = "Z-Score RCI", limits = c(-2.5, 2.5), breaks = seq(-2, 2, 1)) +
+  #Equal units on both axes, so the identity line runs at 45 degrees
+  coord_fixed() +
   theme_classic()
 
 csc_rri_85
