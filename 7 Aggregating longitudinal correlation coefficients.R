@@ -83,6 +83,27 @@ ind_and_glob_lc <-
 
 ind_and_glob_lc
 
+# #Alternative version of the right panel of Figure 9, as requested by an anonymous reviewer:
+# #one variable on the horizontal axis (intra-class correlation) and one variable in color (variance).
+# 
+# alt_lc <- ggplot(long_cors_plus_vars,
+#                  aes(x = mean_icc, y = longitudinal_cors_85,
+#                      size = weight, fill = long_cor_variance_85)) +
+#   geom_point(shape = 21, color = "white", stroke = 1, alpha = 0.9) +
+#   scale_fill_viridis_b(name = "Variance", option = "rocket") +
+#   scale_size_continuous(range = c(min(long_cors_plus_vars$weight), max(long_cors_plus_vars$weight))) +
+#   guides(size = "none") +
+#   scale_y_continuous(breaks = seq(-0.5, 0.9, 0.1)) +
+#   labs(x = "Intra-Class Correlation", y = "Individual Longitudinal Correlation Coefficient") +
+#   theme_classic(base_size = 18) +
+#   theme(panel.background = element_rect(fill = "darkslategray"),
+#         panel.border = element_rect(fill = NA),
+#         legend.text = element_text(size = 10),
+#         legend.title = element_text(size = 12))
+# 
+# #Draw the figure
+# alt_lc
+
 # Now, we need a somewhat convoluted (but effective) maneuver to combine a grid plot with 
 #...a simple ggplot object to constitute Figure 9
 
